@@ -43,9 +43,6 @@ public class DriveCmd extends Command {
             if (timer.get() >= 0.5) {
                 shooterVoltage = -Drive.MAX_SHOOT_VOLTAGE;
             }
-            // } else if (!this.controller.getBButton()) {
-            // intakeVoltage = 0.0;
-            // shooterVoltage = 0.0;
         } else {
             timer.stop();
             timer.reset();
