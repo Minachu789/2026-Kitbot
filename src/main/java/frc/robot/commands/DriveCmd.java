@@ -26,7 +26,7 @@ public class DriveCmd extends Command {
     @Override
     public void execute() {
         double driveSpeed = -MathUtil.applyDeadband(this.controller.getLeftY(), 0.05) * 0.4;
-        double turnSpeed = MathUtil.applyDeadband(this.controller.getRightX(), 0.05) * 0.2;
+        double turnSpeed = MathUtil.applyDeadband(this.controller.getRightX(), 0.05) * 0.25;
         double leftSpeed = driveSpeed + turnSpeed;
         double rightSpeed = driveSpeed - turnSpeed;
         this.driveSubsystem.execute(leftSpeed, rightSpeed);
@@ -36,11 +36,11 @@ public class DriveCmd extends Command {
         double shooterVoltage = 0.0;
         if (this.controller.getAButton()) {
             intakeVoltage = Drive.MAX_SHOOT_VOLTAGE * 0.7;
-            shooterVoltage = Drive.MAX_SHOOT_VOLTAGE * 0.7;
+            shooterVoltage = (Drive.MAX_SHOOT_VOLTAGE * 0.9);
         } else if (this.controller.getBButton()) {
             timer.start();
             intakeVoltage = Drive.MAX_SHOOT_VOLTAGE;
-            if (timer.get() >= 0.5) {
+            if (intakeVoltage >= 11 && timer.get() >= 0.5) {
                 shooterVoltage = -Drive.MAX_SHOOT_VOLTAGE;
             }
         } else {
