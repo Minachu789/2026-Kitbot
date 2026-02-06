@@ -9,21 +9,22 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class MotorSubsystem extends SubsystemBase {
-	private final TalonFX shooter = new TalonFX(1); // Kraken X60
-	private final TalonFX shooterFollower = new TalonFX(2); // Kraken X60
-	private final Follower follower = new Follower(this.shooter.getDeviceID(), MotorAlignmentValue.Opposed);
-	private final TalonFX intake = new TalonFX(3); // TalonFX
-	private final TalonFX lifter = new TalonFX(4); // Kraken X44
+	private final TalonFX flywheel = new TalonFX(1); // Kraken X60
+	private final TalonFX flywheelFollower = new TalonFX(2); // Kraken X60
+	private final Follower follower = new Follower(this.flywheel.getDeviceID(), MotorAlignmentValue.Opposed);
+	private final TalonFX feeder = new TalonFX(3); // TalonFX
+	private final TalonFX hood = new TalonFX(4); // Kraken X44
 	private final MotionMagicVoltage request = new MotionMagicVoltage(0.0);
 	public static boolean isZeroed = false;
 
 	public MotorSubsystem() {
-		this.shooterFollower.setControl(follower);
+		this.flywheelFollower.setControl(follower);
 		this.configMotor();
 		this.setZeroPosition();
 	}
@@ -52,35 +53,35 @@ public class MotorSubsystem extends SubsystemBase {
 				.withMotionMagicCruiseVelocity(1.0);
 		lifterConfig.Slot0 = slot0Configs;
 
-		this.shooter.getConfigurator().apply(motorConfig);
-		this.shooterFollower.getConfigurator().apply(motorConfig);
-		this.intake.getConfigurator().apply(motorConfig);
-		this.lifter.getConfigurator().apply(lifterConfig);
+		this.flywheel.getConfigurator().apply(motorConfig);
+		this.flywheelFollower.getConfigurator().apply(motorConfig);
+		this.feeder.getConfigurator().apply(motorConfig);
+		this.hood.getConfigurator().apply(lifterConfig);
 	}
 
 	public void setZeroPosition() {
-		this.lifter.setPosition(0.0);
+		this.hood.setPosition(0.0);
 		isZeroed = true;
 	}
 
 	public void execute(double shooterVoltage, double intakeVoltage, double liftergoal) {
-		this.shooter.setVoltage(shooterVoltage);
-		this.intake.setVoltage(intakeVoltage);
-		this.lifter.setControl(request.withPosition(liftergoal));
+		this.flywheel.setVoltage(shooterVoltage);
+		this.feeder.setVoltage(intakeVoltage);
+		this.hood.setControl(request.withPosition(Units.degreesToRotations(liftergoal)));
 	}
 
 	public void stop() {
-		this.intake.stopMotor();
-		this.shooter.stopMotor();
-		this.lifter.stopMotor();
+		this.feeder.stopMotor();
+		this.flywheel.stopMotor();
+		this.hood.stopMotor();
 	}
 
 	@Override
 	public void periodic() {
 		if (!isZeroed)
 			return;
-		SmartDashboard.putNumber("ShooterVoltage", this.shooter.getMotorVoltage().getValueAsDouble());
-		SmartDashboard.putNumber("IntakeVoltage", this.intake.getMotorVoltage().getValueAsDouble());
-		SmartDashboard.putNumber("LifterPosition", this.lifter.getPosition().getValueAsDouble());
+		SmartDashboard.putNumber("FlywheelVoltage", this.flywheel.getMotorVoltage().getValueAsDouble());
+		SmartDashboard.putNumber("FeederVoltage", this.feeder.getMotorVoltage().getValueAsDouble());
+		SmartDashboard.putNumber("HoodPosition", this.hood.getPosition().getValueAsDouble());
 	}
 }

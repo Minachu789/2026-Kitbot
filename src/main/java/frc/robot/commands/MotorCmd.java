@@ -25,9 +25,9 @@ public class MotorCmd extends Command {
 	public void execute() {
 		double intakeVolts = controller.getYButton() ? Constants.MAX_INTAKE_VOLTAGE : 0.0;
 		double shooterVolts = controller.getBButton() ? Constants.MAX_SHOOTER_VOLTAGE : 0.0;
-		if (controller.getRightBumperPressed())
+		if (controller.getRightBumperButton())
 			goal += 0.1;
-		else if (controller.getLeftBumperPressed())
+		else if (controller.getLeftBumperButton())
 			goal -= 0.1;
 		this.subsystem.execute(shooterVolts, intakeVolts, goal);
 	}
