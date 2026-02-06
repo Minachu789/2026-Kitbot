@@ -23,9 +23,9 @@ public class IntakeCmd extends Command {
 	@Override
 	public void execute() {
 		double intakeVolts = controller.getBButton() ? 8.0 : 0.0;
-		if (controller.getRightBumperPressed())
+		if (controller.getRightBumperButton())
 			goal += 0.1;
-		else if (controller.getLeftBumperPressed())
+		else if (controller.getLeftBumperButton())
 			goal -= 0.1;
 		this.subsystem.execute(intakeVolts, goal);
 	}
